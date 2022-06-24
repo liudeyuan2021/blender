@@ -3,7 +3,6 @@
 
 set(INC
   .
-  ../glew-mx
   ../../source/blender/imbuf
   ../../source/blender/makesdna
 )
@@ -67,10 +66,7 @@ set(SRC
   intern/GHOST_WindowManager.h
 )
 
-set(LIB
-  bf_intern_glew_mx
-  ${GLEW_LIBRARY}
-)
+set(LIB )
 
 if(WITH_GHOST_DEBUG)
   list(APPEND SRC

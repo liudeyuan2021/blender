@@ -155,13 +155,6 @@ suffix_relpaths(SRC_NEW "${SRC}" "../../../extern/wcwidth/")
 include_directories(${INC_NEW})
 add_library(wcwidth_lib ${SRC_NEW})
 
-# glew-mx
-include(${CMAKE_SOURCE_DIR}/../../../intern/glew-mx/CMakeLists.txt)
-suffix_relpaths(INC_NEW "${INC}" "../../../intern/glew-mx/")
-suffix_relpaths(SRC_NEW "${SRC}" "../../../intern/glew-mx/")
-include_directories(${INC_NEW})
-add_library(glewmx_lib ${SRC_NEW})
-
 # grr, blenfont needs BLI
 include_directories(
   "../../../source/blender/blenlib"

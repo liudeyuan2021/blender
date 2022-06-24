@@ -1338,66 +1338,6 @@ if(WITH_OPENMP)
 endif()
 
 #-----------------------------------------------------------------------------
-# Configure GLEW
-
-if(WITH_SYSTEM_GLEW)
-  find_package(GLEW)
-
-  # Note: There is an assumption here that the system GLEW is not a static library.
-
-  if(NOT GLEW_FOUND)
-    message(FATAL_ERROR "GLEW is required to build Blender. Install it or disable WITH_SYSTEM_GLEW.")
-  endif()
-
-  set(GLEW_INCLUDE_PATH "${GLEW_INCLUDE_DIR}")
-  set(BLENDER_GLEW_LIBRARIES ${GLEW_LIBRARY})
-else()
-  if(WITH_GLEW_ES)
-    set(GLEW_INCLUDE_PATH "${CMAKE_SOURCE_DIR}/extern/glew-es/include")
-
-    list(APPEND GL_DEFINITIONS -DGLEW_STATIC -DWITH_GLEW_ES)
-
-    # These definitions remove APIs from glew.h, making GLEW smaller, and catching unguarded API usage
-    if(WITH_GL_PROFILE_ES20)
-      list(APPEND GL_DEFINITIONS -DGLEW_ES_ONLY)
-    else()
-      # No ES functions are needed
-      list(APPEND GL_DEFINITIONS -DGLEW_NO_ES)
-    endif()
-
-    if(WITH_GL_PROFILE_ES20)
-      if(WITH_GL_EGL)
-        list(APPEND GL_DEFINITIONS -DGLEW_USE_LIB_ES20)
-      endif()
-
-      # ToDo: This is an experiment to eliminate ES 1 symbols,
-      # GLEW doesn't really properly provide this level of control
-      # (for example, without modification it eliminates too many symbols)
-      # so there are lots of modifications to GLEW to make this work,
-      # and no attempt to make it work beyond Blender at this point.
-      list(APPEND GL_DEFINITIONS -DGL_ES_VERSION_1_0=0 -DGL_ES_VERSION_CL_1_1=0 -DGL_ES_VERSION_CM_1_1=0)
-    endif()
-
-    set(BLENDER_GLEW_LIBRARIES extern_glew_es bf_intern_glew_mx)
-
-  else()
-    set(GLEW_INCLUDE_PATH "${CMAKE_SOURCE_DIR}/extern/glew/include")
-
-    list(APPEND GL_DEFINITIONS -DGLEW_STATIC)
-
-    # This won't affect the non-experimental glew library,
-    # but is used for conditional compilation elsewhere.
-    list(APPEND GL_DEFINITIONS -DGLEW_NO_ES)
-
-    set(BLENDER_GLEW_LIBRARIES extern_glew)
-
-  endif()
-
-endif()
-
-list(APPEND GL_DEFINITIONS -DGLEW_NO_GLU)
-
-#-----------------------------------------------------------------------------
 # Configure Bullet
 
 if(WITH_BULLET AND WITH_SYSTEM_BULLET)
@@ -1922,7 +1862,6 @@ if(WITH_BLENDER)
   # internal and external library information first, for test linking
   add_subdirectory(source)
 elseif(WITH_CYCLES_STANDALONE OR WITH_CYCLES_HYDRA_RENDER_DELEGATE)
-  add_subdirectory(intern/glew-mx)
   add_subdirectory(intern/guardedalloc)
   add_subdirectory(intern/libc_compat)
   add_subdirectory(intern/sky)
