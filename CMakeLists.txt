@@ -260,12 +260,10 @@ if(WITH_GHOST_X11)
 endif()
 
 if(UNIX AND NOT APPLE)
-  option(WITH_SYSTEM_GLEW "Use GLEW OpenGL wrapper library provided by the operating system" OFF)
   option(WITH_SYSTEM_GLES "Use OpenGL ES library provided by the operating system"           ON)
   option(WITH_SYSTEM_FREETYPE "Use the freetype library provided by the operating system" OFF)
 else()
   # not an option for other OS's
-  set(WITH_SYSTEM_GLEW OFF)
   set(WITH_SYSTEM_GLES OFF)
   set(WITH_SYSTEM_FREETYPE OFF)
 endif()
@@ -524,14 +522,12 @@ endif()
 # OpenGL
 
 option(WITH_OPENGL              "When off limits visibility of the opengl headers to just bf_gpu and gawain (temporary option for development purposes)" ON)
-option(WITH_GLEW_ES             "Switches to experimental copy of GLEW that has support for OpenGL ES. (temporary option for development purposes)" OFF)
 option(WITH_GL_EGL              "Use the EGL OpenGL system library instead of the platform specific OpenGL system library (CGL, glX, or WGL)"       OFF)
 option(WITH_GL_PROFILE_ES20     "Support using OpenGL ES 2.0. (through either EGL or the AGL/WGL/XGL 'es20' profile)"                               OFF)
 option(WITH_GPU_SHADER_BUILDER  "Shader builder is a developer option enabling linting on GLSL during compilation"                                  OFF)
 
 mark_as_advanced(
   WITH_OPENGL
-  WITH_GLEW_ES
   WITH_GL_EGL
   WITH_GL_PROFILE_ES20
   WITH_GPU_SHADER_BUILDER
@@ -553,11 +549,6 @@ endif()
 if(WIN32)
   option(WITH_GL_ANGLE "Link with the ANGLE library, an OpenGL ES 2.0 implementation based on Direct3D, instead of the system OpenGL library." OFF)
   mark_as_advanced(WITH_GL_ANGLE)
-endif()
-
-if(WITH_GLEW_ES AND WITH_SYSTEM_GLEW)
-  message(WARNING Ignoring WITH_SYSTEM_GLEW and using WITH_GLEW_ES)
-  set(WITH_SYSTEM_GLEW OFF)
 endif()
 
 if(WIN32)
@@ -1253,7 +1244,7 @@ if(WITH_GL_EGL)
   find_package(OpenGL REQUIRED EGL)
   list(APPEND BLENDER_GL_LIBRARIES OpenGL::EGL)
 
-  list(APPEND GL_DEFINITIONS -DWITH_GL_EGL -DGLEW_EGL -DGLEW_INC_EGL)
+  list(APPEND GL_DEFINITIONS -DWITH_GL_EGL)
 
   if(WITH_SYSTEM_GLES)
     if(NOT OPENGLES_EGL_LIBRARY)
@@ -1949,9 +1940,6 @@ elseif(WITH_CYCLES_STANDALONE OR WITH_CYCLES_HYDRA_RENDER_DELEGATE)
   if(WITH_HIP_DYNLOAD)
     add_subdirectory(extern/hipew)
   endif()
-  if(NOT WITH_SYSTEM_GLEW)
-    add_subdirectory(extern/glew)
-  endif()
 endif()
 
 #-----------------------------------------------------------------------------
@@ -2044,7 +2032,6 @@ if(FIRST_RUN)
   info_cfg_option(WITH_INSTALL_PORTABLE)
   info_cfg_option(WITH_MEM_JEMALLOC)
   info_cfg_option(WITH_MEM_VALGRIND)
-  info_cfg_option(WITH_SYSTEM_GLEW)
   info_cfg_option(WITH_X11_ALPHA)
   info_cfg_option(WITH_X11_XF86VMODE)
   info_cfg_option(WITH_X11_XFIXES)
@@ -2098,7 +2085,6 @@ if(FIRST_RUN)
   endif()
   info_cfg_option(WITH_GL_EGL)
   info_cfg_option(WITH_GL_PROFILE_ES20)
-  info_cfg_option(WITH_GLEW_ES)
 
   info_cfg_text("")
 
